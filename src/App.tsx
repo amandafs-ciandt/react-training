@@ -26,6 +26,24 @@ const App = () => {
     }
   }, [isLoaded]);
 
+  const renderDogInfo = () => {
+    if (isLoaded) {
+      return (
+        <>
+          <Col span={6}>
+            <DogDetails />
+          </Col>
+          <Col span={18}>
+            <DogFilter />
+            <DogList />
+          </Col>
+        </>
+      );
+    } else {
+      return <Spin style={{ marginTop: '2rem', marginBottom: '2rem' }} />;
+    }
+  };
+
   const onNotify = (text: string, success = true) => {
     success ? message.success(text) : message.error(text);
   };
@@ -34,18 +52,10 @@ const App = () => {
     <Layout className='app'>
       <Content>
         <Row justify='center' align='middle'>
-          <Col span={8}>
-            <DogDetails />
-          </Col>
-          <Col span={16}>
-            <DogFilter />
-            <Spin spinning={!isLoaded}>
-              <DogList />
-            </Spin>
-          </Col>
+          {renderDogInfo()}
         </Row>
         <Divider />
-        <Row justify='center' align='middle'>
+        <Row justify='center'>
           <Col span={12}>
             <CreateBeerForm notify={onNotify} />
           </Col>

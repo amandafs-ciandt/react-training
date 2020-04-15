@@ -3,23 +3,31 @@ import _ from 'lodash';
 
 import { RadioChangeEvent } from 'antd/lib/radio';
 import { Badge, Radio } from 'antd';
-import './DogFilter.scss';
 
-import { useList } from 'effector-react';
-import { dogBreedFilter } from '../effector/store';
+import { useList, useStore } from 'effector-react';
+import { dogBreedFilter, dogs } from '../effector/store';
 import { toggleFilter } from '../effector/event';
+import { Dog } from '../effector/types';
 
 const DogFilter = () => {
+  const dogList = useStore(dogs);
+
   const filterOptions = useList(dogBreedFilter, ({ letter }, index) =>
     letter !== '' ? (
-      <Radio.Button key={index} value={letter}>
+      <Radio key={index} value={letter}>
         {_.upperFirst(letter)}
-        <Badge showZero count={0} style={{ marginLeft: '0.5rem' }} />
-      </Radio.Button>
+        <Badge
+          showZero
+          count={
+            dogList.filter((dog: Dog) => dog.breed.startsWith(letter)).length
+          }
+          style={{ marginLeft: '0.5rem', backgroundColor: '#2db7f5' }}
+        />
+      </Radio>
     ) : (
-      <Radio.Button key={index} value={letter}>
-        Clear
-      </Radio.Button>
+      <Radio key={index} value={letter}>
+        All
+      </Radio>
     )
   );
 
@@ -29,7 +37,7 @@ const DogFilter = () => {
   };
 
   return (
-    <div className='dog-filter'>
+    <div style={{ padding: '0 0.5rem' }}>
       <Radio.Group onChange={onChange} size='middle'>
         {filterOptions}
       </Radio.Group>

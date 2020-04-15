@@ -1,7 +1,7 @@
 import React from 'react';
 import _ from 'lodash';
 
-import { List, Avatar, Badge } from 'antd';
+import { List, Avatar, Tag } from 'antd';
 
 const DogItem = ({ dog }) => {
   return (
@@ -10,7 +10,7 @@ const DogItem = ({ dog }) => {
         avatar={<Avatar src={dog.image} />}
         title={_.upperFirst(dog.breed)}
       />
-      <Badge count={dog.scolded} showZero />
+      <Tag color='default'>{dog.scolded}</Tag>
     </List.Item>
   );
 };

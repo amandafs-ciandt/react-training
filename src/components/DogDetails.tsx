@@ -3,10 +3,12 @@ import { useStore } from 'effector-react';
 import _ from 'lodash';
 
 import { selectedDog } from '../effector/store';
+import { scoldDog } from '../effector/event';
 
 import './DogDetails.scss';
-import { Button, notification } from 'antd';
-import { scoldDog } from '../effector/event';
+import { notification, Card, Avatar, Typography } from 'antd';
+
+const { Title } = Typography;
 
 const DogDetails = () => {
   const dog = useStore(selectedDog);
@@ -19,18 +21,15 @@ const DogDetails = () => {
 
   return (
     <div className='dog-details'>
-      <div className='dog-details__main-info'>
-        <div
-          className='dog-details__image'
-          style={{ backgroundImage: `url(${dog.image})` }}></div>
-        <h2>{_.upperFirst(dog.breed)}</h2>
-      </div>
-      <div className='dog-details__info'>
-        <div className='dog-details__actions'>
-          <Button onClick={() => scoldDog()}>Scold!</Button>
-          <Button onClick={bark}>Bark!</Button>
-        </div>
-      </div>
+      <Card
+        style={{ width: 300 }}
+        cover={<Avatar size={150} src={dog.image} />}
+        actions={[
+          <p onClick={() => scoldDog()}>Scold!</p>,
+          <p onClick={bark}>Bark!</p>,
+        ]}>
+        <Title level={4}>{_.upperFirst(dog.breed)}</Title>
+      </Card>
     </div>
   );
 };
