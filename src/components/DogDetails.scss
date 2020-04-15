@@ -1,0 +1,43 @@
+.dog-details {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  border-radius: 1rem;
+
+  &__main-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  &__image {
+    width: 8rem;
+    height: 8rem;
+    position: relative;
+    overflow: hidden;
+    border-radius: 50%;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+
+  &__info {
+    margin-left: 3rem;
+  }
+
+  &__actions {
+    display: flex;
+    flex-direction: column;
+
+    button:first-child {
+      margin-bottom: 1rem;
+    }
+  }
+
+  h2,
+  p {
+    margin: 0;
+  }
+}

@@ -1,0 +1,13 @@
+.dog-list {
+  padding: 1rem;
+
+  &__content {
+    height: 10rem;
+    overflow: auto;
+  }
+
+  &__item {
+    cursor: pointer;
+    border-bottom: 1px solid #f0f0f0;
+  }
+}
