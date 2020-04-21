@@ -1,27 +1,27 @@
-import React from 'react';
-import { shallow } from 'enzyme';
+import React from "react";
+import { shallow } from "enzyme";
 
-import CreateBeerFormikForm from '../components/CreateBeerFormikForm';
+import CreateBeerFormikForm from ".";
 
 const onNotifyMock = jest.fn();
 
-describe('CreateBeerFormikForm', () => {
+describe("CreateBeerFormikForm", () => {
   const formValues = {
-    beerName: '',
-    beerType: '',
+    beerName: "",
+    beerType: "",
     hasCorn: false,
-    ingredients: '',
+    ingredients: "",
   };
 
   const createBeerFormikFormComponent = shallow(
     <CreateBeerFormikForm notify={onNotifyMock} />
   );
 
-  it('should work', () => {
+  it("should work", () => {
     expect(createBeerFormikFormComponent).toMatchSnapshot();
   });
 
-  it('should render form correctly', () => {
+  it("should render form correctly", () => {
     const [
       inputLength,
       selectLength,
@@ -30,26 +30,26 @@ describe('CreateBeerFormikForm', () => {
       totalFieldsLength,
     ] = [1, 1, 1, 1, 4];
 
-    expect(createBeerFormikFormComponent.find('Input').length).toBe(
+    expect(createBeerFormikFormComponent.find("Input").length).toBe(
       inputLength
     );
-    expect(createBeerFormikFormComponent.find('Select').length).toBe(
+    expect(createBeerFormikFormComponent.find("Select").length).toBe(
       selectLength
     );
-    expect(createBeerFormikFormComponent.find('Checkbox').length).toBe(
+    expect(createBeerFormikFormComponent.find("Checkbox").length).toBe(
       checkboxLength
     );
-    expect(createBeerFormikFormComponent.find('TextArea').length).toBe(
+    expect(createBeerFormikFormComponent.find("TextArea").length).toBe(
       textareaLength
     );
-    expect(createBeerFormikFormComponent.find('.beer-form__input').length).toBe(
+    expect(createBeerFormikFormComponent.find(".beer-form__input").length).toBe(
       totalFieldsLength
     );
   });
 
-  it('should show the correct beer types on select', () => {
-    const beerTypes = ['ale', 'lager', 'malt', 'stout'];
-    const optionElements = createBeerFormikFormComponent.find('Option');
+  it("should show the correct beer types on select", () => {
+    const beerTypes = ["ale", "lager", "malt", "stout"];
+    const optionElements = createBeerFormikFormComponent.find("Option");
 
     expect(optionElements.length).toBe(beerTypes.length);
 

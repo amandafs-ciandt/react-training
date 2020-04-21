@@ -1,19 +1,19 @@
-import React, { useEffect } from 'react';
-import { useStore } from 'effector-react';
-import axios, { AxiosResponse } from 'axios';
+import React, { useEffect } from "react";
+import { useStore } from "effector-react";
+import axios, { AxiosResponse } from "axios";
 
-import { loadList, setLoaded, selectDog } from './effector/event';
-import { loaded } from './effector/store';
-import { Dog } from './effector/types';
+import { loadList, setLoaded, selectDog } from "./effector/event";
+import { loaded } from "./effector/store";
+import { Dog } from "./effector/types";
 
-import { Layout, Row, Col, Divider, Spin, message } from 'antd';
-import './App.scss';
+import { Layout, Row, Col, Divider, Spin, message } from "antd";
+import "./App.scss";
 
-import DogList from './components/DogList';
-import DogDetails from './components/DogDetails';
-import DogFilter from './components/DogFilter';
-import CreateBeerForm from './components/CreateBeerForm';
-import CreateBeerFormikForm from './components/CreateBeerFormikForm';
+import DogList from "./components/DogList";
+import DogDetails from "./components/DogDetails";
+import DogFilter from "./components/DogFilter";
+import CreateBeerForm from "./components/CreateBeerForm";
+import CreateBeerFormikForm from "./components/CreateBeerFormikForm";
 
 const App = () => {
   const { Content } = Layout;
@@ -40,7 +40,7 @@ const App = () => {
         </>
       );
     } else {
-      return <Spin style={{ marginTop: '2rem', marginBottom: '2rem' }} />;
+      return <Spin style={{ marginTop: "2rem", marginBottom: "2rem" }} />;
     }
   };
 
@@ -49,13 +49,13 @@ const App = () => {
   };
 
   return (
-    <Layout className='app'>
+    <Layout className="app">
       <Content>
-        <Row justify='center' align='middle'>
+        <Row justify="center" align="middle">
           {renderDogInfo()}
         </Row>
         <Divider />
-        <Row justify='center'>
+        <Row justify="center">
           <Col span={12}>
             <CreateBeerForm notify={onNotify} />
           </Col>
@@ -69,7 +69,7 @@ const App = () => {
 };
 
 const getDogList = async () => {
-  const url: string = 'https://dog.ceo/api';
+  const url: string = "https://dog.ceo/api";
   const dogsList: Dog[] = [];
   const promises: Promise<AxiosResponse>[] = [];
 
@@ -78,7 +78,7 @@ const getDogList = async () => {
   Object.keys(listResponse.data.message).forEach((dogBreed: string) => {
     dogsList.push({
       breed: dogBreed,
-      image: '',
+      image: "",
       scolded: 0,
     });
 

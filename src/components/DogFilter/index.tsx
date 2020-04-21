@@ -1,19 +1,19 @@
-import React from 'react';
-import _ from 'lodash';
+import React from "react";
+import _ from "lodash";
 
-import { RadioChangeEvent } from 'antd/lib/radio';
-import { Badge, Radio } from 'antd';
+import { RadioChangeEvent } from "antd/lib/radio";
+import { Badge, Radio } from "antd";
 
-import { useList, useStore } from 'effector-react';
-import { dogBreedFilter, dogs } from '../effector/store';
-import { toggleFilter } from '../effector/event';
-import { Dog } from '../effector/types';
+import { useList, useStore } from "effector-react";
+import { dogBreedFilter, dogs } from "../../effector/store";
+import { toggleFilter } from "../../effector/event";
+import { Dog } from "../../effector/types";
 
 const DogFilter = () => {
   const dogList = useStore(dogs);
 
   const filterOptions = useList(dogBreedFilter, ({ letter }, index) =>
-    letter !== '' ? (
+    letter !== "" ? (
       <Radio key={index} value={letter}>
         {_.upperFirst(letter)}
         <Badge
@@ -21,7 +21,7 @@ const DogFilter = () => {
           count={
             dogList.filter((dog: Dog) => dog.breed.startsWith(letter)).length
           }
-          style={{ marginLeft: '0.5rem', backgroundColor: '#2db7f5' }}
+          style={{ marginLeft: "0.5rem", backgroundColor: "#2db7f5" }}
         />
       </Radio>
     ) : (
@@ -37,8 +37,8 @@ const DogFilter = () => {
   };
 
   return (
-    <div style={{ padding: '0 0.5rem' }}>
-      <Radio.Group onChange={onChange} size='middle'>
+    <div style={{ padding: "0 0.5rem" }}>
+      <Radio.Group onChange={onChange} size="middle">
         {filterOptions}
       </Radio.Group>
     </div>
