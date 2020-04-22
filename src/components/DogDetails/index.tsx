@@ -19,17 +19,24 @@ const DogDetails = () => {
     });
   };
 
+  const avatarSize = 150;
+  const titleSize = 4;
+
   return (
     <div className="dog-details">
       <Card
         style={{ width: 300 }}
-        cover={<Avatar size={150} src={dog.image} />}
+        cover={<Avatar size={avatarSize} src={dog.image} />}
         actions={[
-          <p onClick={() => scoldDog()}>Scold!</p>,
-          <p onClick={bark}>Bark!</p>,
+          <p className="scold-action" onClick={() => scoldDog()}>
+            Scold!
+          </p>,
+          <p className="bark-action" onClick={bark}>
+            Bark!
+          </p>,
         ]}
       >
-        <Title level={4}>{_.upperFirst(dog.breed)}</Title>
+        <Title level={titleSize}>{_.upperFirst(dog.breed)}</Title>
       </Card>
     </div>
   );

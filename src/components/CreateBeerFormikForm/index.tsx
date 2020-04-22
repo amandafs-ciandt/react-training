@@ -68,6 +68,7 @@ const CreateBeerFormikForm = ({ notify }) => {
         <div className="beer-form__input checkbox-input">
           <label></label>
           <Checkbox
+            name="hasCorn"
             checked={beerForm.values.hasCorn}
             onChange={() =>
               beerForm.setFieldValue("hasCorn", !beerForm.values.hasCorn)
