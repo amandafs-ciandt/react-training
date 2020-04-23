@@ -1,23 +1,24 @@
-import React, { useEffect } from "react";
-import { useStore } from "effector-react";
-import axios, { AxiosResponse } from "axios";
+import React, { useEffect } from 'react';
+import { useStore } from 'effector-react';
+import axios, { AxiosResponse } from 'axios';
+import { useSnackbar } from 'notistack';
 
-import { loadList, setLoaded, selectDog } from "./effector/event";
-import { loaded } from "./effector/store";
-import { Dog } from "./effector/types";
+import { loadList, setLoaded, selectDog } from './effector/event';
+import { loaded } from './effector/store';
 
-import { Layout, Row, Col, Divider, Spin, message } from "antd";
-import "./App.scss";
+import CreateBeerForm from './components/CreateBeerForm';
+import CreateBeerFormik from './components/CreateBeerFormik';
+import DogDetails from './components/DogDetails';
+import DogList from './components/DogList';
+import DogFilter from './components/DogFilter';
 
-import DogList from "./components/DogList";
-import DogDetails from "./components/DogDetails";
-import DogFilter from "./components/DogFilter";
-import CreateBeerForm from "./components/CreateBeerForm";
-import CreateBeerFormikForm from "./components/CreateBeerFormikForm";
+import { Dog } from './shared/types';
+
+import { CircularProgress, Divider } from '@material-ui/core';
+import './App.scss';
 
 const App = () => {
-  const { Content } = Layout;
-
+  const { enqueueSnackbar } = useSnackbar();
   const isLoaded = useStore(loaded);
 
   useEffect(() => {
@@ -29,47 +30,47 @@ const App = () => {
   const renderDogInfo = () => {
     if (isLoaded) {
       return (
-        <>
-          <Col span={6}>
-            <DogDetails />
-          </Col>
-          <Col span={18}>
+        <div className='app__dogs-container'>
+          <DogDetails />
+          <div>
             <DogFilter />
             <DogList />
-          </Col>
-        </>
+          </div>
+        </div>
       );
     } else {
-      return <Spin style={{ marginTop: "2rem", marginBottom: "2rem" }} />;
+      return (
+        <div className='app__loading'>
+          <CircularProgress />
+        </div>
+      );
     }
   };
 
-  const onNotify = (text: string, success = true) => {
-    success ? message.success(text) : message.error(text);
+  const onFormNotify = () => {
+    enqueueSnackbar('Form successfully submitted!', {
+      variant: 'success',
+      anchorOrigin: {
+        vertical: 'top',
+        horizontal: 'center',
+      },
+    });
   };
 
   return (
-    <Layout className="app">
-      <Content>
-        <Row justify="center" align="middle">
-          {renderDogInfo()}
-        </Row>
-        <Divider />
-        <Row justify="center">
-          <Col span={12}>
-            <CreateBeerForm notify={onNotify} />
-          </Col>
-          <Col span={12}>
-            <CreateBeerFormikForm notify={onNotify} />
-          </Col>
-        </Row>
-      </Content>
-    </Layout>
+    <div className='app'>
+      {renderDogInfo()}
+      <Divider />
+      <div className='app__forms-container'>
+        <CreateBeerForm notify={onFormNotify} />
+        <CreateBeerFormik notify={onFormNotify} />
+      </div>
+    </div>
   );
 };
 
 const getDogList = async () => {
-  const url: string = "https://dog.ceo/api";
+  const url: string = 'https://dog.ceo/api';
   const dogsList: Dog[] = [];
   const promises: Promise<AxiosResponse>[] = [];
 
@@ -78,7 +79,7 @@ const getDogList = async () => {
   Object.keys(listResponse.data.message).forEach((dogBreed: string) => {
     dogsList.push({
       breed: dogBreed,
-      image: "",
+      image: '',
       scolded: 0,
     });
 

@@ -1,17 +1,35 @@
 import React from 'react';
 import _ from 'lodash';
 
-import { List, Avatar, Tag } from 'antd';
+import {
+  ListItem,
+  ListItemAvatar,
+  Avatar,
+  ListItemText,
+  ListItemSecondaryAction,
+  Chip,
+} from '@material-ui/core';
 
-const DogItem = ({ dog }) => {
+import { Dog } from '../../shared/types';
+
+interface IProps {
+  dog: Dog;
+}
+
+const DogItem = ({ dog }: IProps) => {
   return (
-    <List.Item style={{ padding: '0.5rem 1rem' }}>
-      <List.Item.Meta
-        avatar={<Avatar src={dog.image} />}
-        title={_.upperFirst(dog.breed)}
+    <ListItem alignItems='center' button>
+      <ListItemAvatar>
+        <Avatar alt={dog.breed} src={dog.image} data-testid='dog-item-avatar' />
+      </ListItemAvatar>
+      <ListItemText
+        primary={_.upperFirst(dog.breed)}
+        data-testid='dog-item-breed'
       />
-      <Tag color='default'>{dog.scolded}</Tag>
-    </List.Item>
+      <ListItemSecondaryAction>
+        <Chip label={dog.scolded} data-testid='dog-item-scolded-value' />
+      </ListItemSecondaryAction>
+    </ListItem>
   );
 };
 

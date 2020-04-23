@@ -1,5 +1,5 @@
 import { createEvent } from 'effector';
-import { Dog, BeerForm } from './types';
+import { Dog, BeerForm } from '../shared/types';
 
 export const setLoaded = createEvent<Boolean>('set loaded list');
 

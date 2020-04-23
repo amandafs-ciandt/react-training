@@ -1,69 +1,93 @@
-import React from "react";
-import * as effector from "effector-react";
-import { shallow, ShallowWrapper, mount, ReactWrapper } from "enzyme";
+import React from 'react';
+import { shallow, ShallowWrapper } from 'enzyme';
+import * as effector from 'effector-react';
+import notistack from 'notistack';
+import * as events from '../../effector/event';
 
-import DogDetails from ".";
-import { Avatar, notification } from "antd";
-import { ActionButtonProps } from "antd/lib/modal";
+import DogDetails from '.';
 
-const setUp = () => {
+const setUpShallowRendering = () => {
   return shallow(<DogDetails />);
 };
 
 const selectedDog = {
-  breed: "bulldog",
-  image: "https://images.dog.ceo/breeds/bulldog-french/n02108915_4474.jpg",
+  breed: 'bulldog',
+  image: 'https://images.dog.ceo/breeds/bulldog-french/n02108915_4474.jpg',
   scolded: 3,
 };
 
-const spy = jest.spyOn(effector, "useStore");
-spy.mockReturnValue(selectedDog);
+jest.mock('notistack', () => ({
+  useSnackbar: jest.fn(),
+}));
 
-describe("DogDetails", () => {
-  let dogDetailsComponent: ShallowWrapper | ReactWrapper;
+const closeSnackbar = jest.fn();
+const enqueueSnackbar = jest.fn();
+
+jest.spyOn(notistack, 'useSnackbar').mockImplementation(() => {
+  return { enqueueSnackbar, closeSnackbar };
+});
+
+const selectedDogSpy = jest.spyOn(effector, 'useStore');
+selectedDogSpy.mockReturnValue(selectedDog);
+
+describe('DogDetails', () => {
+  let dogDetailsComponent: ShallowWrapper;
 
   beforeEach(() => {
-    dogDetailsComponent = setUp();
+    dogDetailsComponent = setUpShallowRendering();
   });
 
-  it("should work", () => {
+  it('should render correctly', () => {
     expect(dogDetailsComponent).toMatchSnapshot();
   });
 
-  it("should display the dog details card correctly", () => {
-    const cardAvatar = dogDetailsComponent.find("Card").prop("cover") as Avatar;
-    const cardTitle = dogDetailsComponent.find("Title").props().children;
-    const cardButtons = dogDetailsComponent
-      .find("Card")
-      .prop("actions") as ActionButtonProps;
+  it('should display the dog details card correctly', () => {
+    const cardAvatar = dogDetailsComponent.find(
+      '[data-testid="dog-details-image"]'
+    );
+    const cardTitle = dogDetailsComponent.find(
+      '[data-testid="dog-details-breed"]'
+    );
+    const scoldButton = dogDetailsComponent.find(
+      '[data-testid="dog-details-scold-button"]'
+    );
+    const barkButton = dogDetailsComponent.find(
+      '[data-testid="dog-details-bark-button"]'
+    );
 
-    expect(cardAvatar.props.src).toEqual(selectedDog.image);
-    expect(cardTitle).toEqual("Bulldog");
-    expect(cardButtons[0].props.children).toEqual("Scold!");
-    expect(cardButtons[1].props.children).toEqual("Bark!");
+    expect(cardAvatar.prop('image')).toEqual(selectedDog.image);
+    expect(cardTitle.text()).toEqual('Bulldog');
+    expect(scoldButton.text()).toEqual('Scold!');
+    expect(barkButton.text()).toEqual('Bark!');
   });
 
-  it("should show notification when 'bark!' is clicked", () => {
-    const barkSpy = jest.spyOn(notification, "open");
-    dogDetailsComponent = mount(<DogDetails />);
+  it('should show toast when clicked on bark button', () => {
+    const barkButton = dogDetailsComponent.find(
+      '[data-testid="dog-details-bark-button"]'
+    );
 
-    const barkButton = dogDetailsComponent.find(".bark-action");
+    barkButton.simulate('click');
 
-    barkButton.simulate("click");
-
-    expect(barkSpy).toHaveBeenCalledWith({
-      message: "Woof Woof!",
+    expect(enqueueSnackbar).toHaveBeenCalledTimes(1);
+    expect(enqueueSnackbar).toHaveBeenCalledWith('Woof woof!', {
+      anchorOrigin: {
+        vertical: 'top',
+        horizontal: 'center',
+      },
     });
   });
 
-  /* it("should call scoldDog event 'scold!' is clicked", () => {
-    const scoldSpy = jest.spyOn(notification, "open");
-    dogDetailsComponent = mount(<DogDetails />);
+  it('should call scoldDog when clicked on scold button', () => {
+    const scoldDogMock = jest
+      .spyOn(events, 'scoldDog')
+      .mockImplementation(() => {});
 
-    const scoldButton = dogDetailsComponent.find(".scold-action");
+    const scoldButton = dogDetailsComponent.find(
+      '[data-testid="dog-details-scold-button"]'
+    );
 
-    scoldButton.simulate("click");
+    scoldButton.simulate('click');
 
-    expect(scoldSpy).toHaveBeenCalled();
-  }); */
+    expect(scoldDogMock).toBeCalled();
+  });
 });

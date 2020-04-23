@@ -1,33 +1,31 @@
 {
-  "name": "react-training",
+  "name": "training",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@ant-design/icons": "4.0.0",
     "@material-ui/core": "^4.9.11",
-    "@material-ui/icons": "^4.9.1",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
     "@types/enzyme": "^3.10.5",
+    "@types/enzyme-adapter-react-16": "^1.0.6",
     "@types/jest": "^24.0.0",
-    "@types/lodash": "^4.14.149",
+    "@types/lodash": "^4.14.150",
     "@types/node": "^12.0.0",
-    "@types/react-dom": "^16.9.0",
-    "@types/sinon": "^9.0.0",
-    "antd": "^4.1.2",
+    "@types/react": "^16.9.34",
+    "@types/react-dom": "^16.9.6",
     "axios": "^0.19.2",
-    "effector": "^20.13.7",
-    "effector-react": "^20.6.3",
+    "effector": "^20.14.0",
+    "effector-react": "^20.7.1",
     "formik": "^2.1.4",
     "lodash": "^4.17.15",
     "node-sass": "^4.13.1",
+    "notistack": "^0.9.11",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-scripts": "3.4.1",
-    "sinon": "^9.0.2",
     "typescript": "~3.7.2",
-    "yup": "^0.28.3"
+    "yup": "^0.28.4"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -51,9 +49,10 @@
     ]
   },
   "devDependencies": {
-    "@types/react": "^16.9.33",
-    "@types/yup": "^0.26.35",
+    "@types/jest-when": "^2.7.1",
+    "@types/yup": "^0.26.37",
     "enzyme": "^3.11.0",
-    "enzyme-adapter-react-16": "^1.15.2"
+    "enzyme-adapter-react-16": "^1.15.2",
+    "jest-when": "^2.7.1"
   }
 }

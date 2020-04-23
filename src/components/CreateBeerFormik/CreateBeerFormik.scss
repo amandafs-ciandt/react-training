@@ -1,4 +1,4 @@
-.create-beer-form {
+.create-beer-formik {
   padding: 2rem;
 
   &__title {
@@ -16,7 +16,8 @@
     margin-bottom: 1rem;
   }
 
-  .MuiFormControl-root {
+  .MuiFormControl-root,
+  Button {
     width: 100%;
   }
 }

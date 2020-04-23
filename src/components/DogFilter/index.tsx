@@ -1,46 +1,68 @@
-import React from "react";
-import _ from "lodash";
+import React, { ChangeEvent } from 'react';
+import _ from 'lodash';
 
-import { RadioChangeEvent } from "antd/lib/radio";
-import { Badge, Radio } from "antd";
+import { RadioGroup, FormControlLabel, Radio, Chip } from '@material-ui/core';
 
-import { useList, useStore } from "effector-react";
-import { dogBreedFilter, dogs } from "../../effector/store";
-import { toggleFilter } from "../../effector/event";
-import { Dog } from "../../effector/types";
+import { useStore } from 'effector-react';
+import { dogBreedFilter, dogs } from '../../effector/store';
+import { toggleFilter } from '../../effector/event';
+
+import { Dog } from '../../shared/types';
+
+import './DogFilter.scss';
 
 const DogFilter = () => {
   const dogList = useStore(dogs);
+  const filterOptions = useStore(dogBreedFilter);
 
-  const filterOptions = useList(dogBreedFilter, ({ letter }, index) =>
-    letter !== "" ? (
-      <Radio key={index} value={letter}>
-        {_.upperFirst(letter)}
-        <Badge
-          showZero
-          count={
-            dogList.filter((dog: Dog) => dog.breed.startsWith(letter)).length
-          }
-          style={{ marginLeft: "0.5rem", backgroundColor: "#2db7f5" }}
-        />
-      </Radio>
-    ) : (
-      <Radio key={index} value={letter}>
-        All
-      </Radio>
-    )
+  const filterItem = (letter: string) => (
+    <div className='dog-filter__item'>
+      {_.upperFirst(letter)}{' '}
+      <Chip
+        label={
+          dogList.filter((dog: Dog) => dog.breed.startsWith(letter)).length
+        }
+        data-testid='dog-item-scolded-value'
+        color='secondary'
+        size='small'
+      />
+    </div>
   );
 
-  const onChange = (e: RadioChangeEvent) => {
+  const breedFilter = filterOptions.map(({ letter }, index) => {
+    if (letter !== '') {
+      return (
+        <FormControlLabel
+          key={index}
+          value={letter}
+          control={<Radio />}
+          label={filterItem(letter)}
+          data-testid='dog-filter-option'
+        />
+      );
+    } else {
+      return (
+        <FormControlLabel
+          key={index}
+          value={letter}
+          control={<Radio />}
+          label={<div className='dog-filter__item'>All</div>}
+          data-testid='dog-filter-option'
+        />
+      );
+    }
+  });
+
+  const onChange = (e: ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
     toggleFilter(e.target.value);
   };
 
   return (
-    <div style={{ padding: "0 0.5rem" }}>
-      <Radio.Group onChange={onChange} size="middle">
-        {filterOptions}
-      </Radio.Group>
+    <div className='dog-filter'>
+      <RadioGroup row name='dog-filter' onChange={onChange}>
+        {breedFilter}
+      </RadioGroup>
     </div>
   );
 };

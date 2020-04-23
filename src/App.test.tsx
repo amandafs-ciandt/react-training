@@ -1,29 +1,25 @@
-import React from "react";
-import App from "./App";
-import axios from "axios";
+import React from 'react';
+import { shallow, mount, ShallowWrapper, ReactWrapper } from 'enzyme';
+import App from './App';
 
-jest.mock("axios");
-const mockedAxios = axios as jest.Mocked<typeof axios>;
+const setUpShallowRendering = (): ShallowWrapper => {
+  return shallow(<App />);
+};
 
-describe("App", () => {
-  it("should fetch data from dogs api successfully", async () => {
-    /* const expectedResponse = {
-      data: {
-        message: {
-          affenpinscher: [],
-          african: [],
-          airedale: [],
-          akita: [],
-          appenzeller: [],
-        },
-        status: 'success',
-      },
-    };
+const setUpMountedRendering = (): ReactWrapper => {
+  return mount(<App />);
+};
 
-    mockedAxios.get.mockImplementationOnce(() =>
-      Promise.resolve(expectedResponse)
-    );
+describe('App', () => {
+  let appComponent: ShallowWrapper | ReactWrapper;
 
-    expect(axios.get).toHaveBeenCalledWith(`${API}/search?query=react`); */
+  it('should render correctly', () => {
+    appComponent = setUpShallowRendering();
+
+    expect(appComponent).toMatchSnapshot();
+  });
+
+  it('should render correctly', () => {
+    expect(true).toBeTruthy();
   });
 });

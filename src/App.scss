@@ -1,7 +1,22 @@
-@import "~antd/dist/antd.css";
-
 .app {
-  background-color: #fafafa;
-  font-size: 16px;
-  font-family: "Roboto", sans-serif;
+  padding: 0 2rem;
+
+  &__dogs-container {
+    padding: 1rem 0;
+    display: grid;
+    grid-template-columns: 1fr 4fr;
+  }
+
+  &__forms-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  &__loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem 0;
+    height: 15rem;
+  }
 }

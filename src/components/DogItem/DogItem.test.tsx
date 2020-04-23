@@ -1,32 +1,38 @@
-import React from "react";
-import { shallow } from "enzyme";
+import React from 'react';
+import { shallow, ShallowWrapper } from 'enzyme';
 
-import { Avatar } from "antd";
+import DogItem from '.';
 
-import DogItem from ".";
+const dog = {
+  breed: 'bulldog',
+  image: 'https://images.dog.ceo/breeds/bulldog-french/n02108915_4474.jpg',
+  scolded: 3,
+};
 
-describe("DogItem", () => {
-  const dog = {
-    breed: "spaniel",
-    image: "https://images.dog.ceo/breeds/spaniel-blenheim/n02086646_2815.jpg",
-    scolded: 3,
-  };
+const setUpShallowRendering = (): ShallowWrapper => {
+  return shallow(<DogItem dog={dog} />);
+};
 
-  const dogItemComponent = shallow(<DogItem dog={dog} />);
+describe('DogItem', () => {
+  let dogItemComponent: ShallowWrapper;
 
-  it("should work", () => {
+  beforeEach(() => {
+    dogItemComponent = setUpShallowRendering();
+  });
+
+  it('should render correctly', () => {
     expect(dogItemComponent).toMatchSnapshot();
   });
 
-  it("should display the dog information correctly", () => {
-    const itemAvatar = dogItemComponent.find("Meta").prop("avatar") as Avatar;
-    const itemTitle = dogItemComponent.find("Meta").prop("title");
-    const itemTag = dogItemComponent.find("Tag").props().children;
-
-    expect(itemAvatar.props.src).toEqual(
-      "https://images.dog.ceo/breeds/spaniel-blenheim/n02086646_2815.jpg"
+  it('should display the dog information correctly', () => {
+    const itemAvatar = dogItemComponent.find('[data-testid="dog-item-avatar"]');
+    const itemTitle = dogItemComponent.find('[data-testid="dog-item-breed"]');
+    const itemScoldedValue = dogItemComponent.find(
+      '[data-testid="dog-item-scolded-value"]'
     );
-    expect(itemTitle).toEqual("Spaniel");
-    expect(itemTag).toEqual(3);
+
+    expect(itemAvatar.prop('src')).toEqual(dog.image);
+    expect(itemTitle.prop('primary')).toEqual('Bulldog');
+    expect(itemScoldedValue.prop('label')).toEqual(dog.scolded);
   });
 });

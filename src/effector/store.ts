@@ -8,7 +8,7 @@ import {
   toggleFilter,
   submitForm,
 } from './event';
-import { Dog, BreedFilter, BeerForm } from './types';
+import { Dog, BreedFilter, BeerForm } from '../shared/types';
 
 export const dogBreedFilter = createStore([
   { letter: 'a', selected: false },
@@ -103,19 +103,6 @@ export const dogs = createStore<Dog[]>([])
 export const filtered = combine(dogs, filterFn, (list: Dog[], fn: any) =>
   list.filter(fn)
 );
-
-/* export const amount = todos.map(todos => {
-  switch (todos.length) {
-    case 0:
-      return "no items";
-    case 1:
-      return "one todo";
-    case 2:
-      return "two todo";
-    default:
-      return "todos amount: " + todos.length;
-  }
-}); */
 
 export const beerForm = createStore<BeerForm>({
   beerName: '',

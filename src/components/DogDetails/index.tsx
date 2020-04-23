@@ -1,42 +1,74 @@
-import React from "react";
-import { useStore } from "effector-react";
-import _ from "lodash";
+import React from 'react';
+import { useStore } from 'effector-react';
+import _ from 'lodash';
 
-import { selectedDog } from "../../effector/store";
-import { scoldDog } from "../../effector/event";
+import { selectedDog } from '../../effector/store';
+import { scoldDog } from '../../effector/event';
 
-import "./DogDetails.scss";
-import { notification, Card, Avatar, Typography } from "antd";
+import { useSnackbar } from 'notistack';
 
-const { Title } = Typography;
+import './DogDetails.scss';
+import {
+  Card,
+  CardActionArea,
+  CardMedia,
+  Typography,
+  CardContent,
+  CardActions,
+  Button,
+} from '@material-ui/core';
 
 const DogDetails = () => {
+  const { enqueueSnackbar } = useSnackbar();
   const dog = useStore(selectedDog);
 
   const bark = () => {
-    notification.open({
-      message: "Woof Woof!",
+    enqueueSnackbar('Woof woof!', {
+      anchorOrigin: {
+        vertical: 'top',
+        horizontal: 'center',
+      },
     });
   };
 
-  const avatarSize = 150;
-  const titleSize = 4;
-
   return (
-    <div className="dog-details">
-      <Card
-        style={{ width: 300 }}
-        cover={<Avatar size={avatarSize} src={dog.image} />}
-        actions={[
-          <p className="scold-action" onClick={() => scoldDog()}>
+    <div className='dog-details'>
+      <Card className=''>
+        <CardActionArea>
+          <CardMedia
+            component='img'
+            alt={dog.breed}
+            height='200'
+            image={dog.image}
+            title={dog.breed}
+            data-testid='dog-details-image'
+          />
+          <CardContent>
+            <Typography
+              gutterBottom
+              variant='h5'
+              component='h2'
+              data-testid='dog-details-breed'>
+              {_.upperFirst(dog.breed)}
+            </Typography>
+          </CardContent>
+        </CardActionArea>
+        <CardActions>
+          <Button
+            size='small'
+            color='secondary'
+            data-testid='dog-details-scold-button'
+            onClick={() => scoldDog()}>
             Scold!
-          </p>,
-          <p className="bark-action" onClick={bark}>
+          </Button>
+          <Button
+            size='small'
+            color='secondary'
+            data-testid='dog-details-bark-button'
+            onClick={bark}>
             Bark!
-          </p>,
-        ]}
-      >
-        <Title level={titleSize}>{_.upperFirst(dog.breed)}</Title>
+          </Button>
+        </CardActions>
       </Card>
     </div>
   );

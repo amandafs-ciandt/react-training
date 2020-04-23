@@ -1,102 +1,145 @@
-import React, { useState } from "react";
-import { submitForm } from "../../effector/event";
+import React, { useState, useEffect, FormEvent, ChangeEvent } from 'react';
 import {
   TextField,
-  Select,
   FormControl,
+  InputLabel,
+  Select,
   MenuItem,
   FormControlLabel,
   Checkbox,
   Button,
-  InputLabel,
-} from "@material-ui/core";
+} from '@material-ui/core';
 
-import "./CreateBeerForm.scss";
+import './CreateBeerForm.scss';
 
-const initialValues = {
-  beerName: "",
-  beerType: "",
-  hasCorn: false,
-  ingredients: "",
+interface IProps {
+  notify: Function;
+}
+
+type FormData = {
+  beerName: string;
+  beerType: string;
+  hasCorn: boolean;
+  ingredients: string;
 };
 
-const CreateBeerForm = ({ notify }) => {
-  // const [form] = Form.useForm();
+const defaultValues = {
+  beerName: '',
+  beerType: '',
+  hasCorn: false,
+  ingredients: '',
+};
+
+const CreateBeerForm = ({ notify }: IProps) => {
+  const [form, setForm] = useState<FormData>(defaultValues);
   const [validForm, setValidForm] = useState(false);
 
-  /* const validateForm = (): void => {
-    setValidForm(
-      form.getFieldValue("beerName").length > 0 &&
-        form.getFieldValue("beerType").length > 0 &&
-        form.getFieldValue("ingredients").length > 0
-    );
-  }; */
-
-  const handleChange = (
-    event: React.ChangeEvent<{ name?: string; value: unknown }>
+  const onInputChange = (
+    event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    /* const name = event.target.name as keyof typeof state;
-    setState({
-      ...state,
-      [name]: event.target.value,
-    }); */
+    const { name, value } = event.target;
+    setForm({ ...form, [name]: value });
   };
 
-  const handleSubmit = (values: any): void => {
-    submitForm(values);
-
-    notify("Form successfully submitted!");
+  const onSelectChange = (event: ChangeEvent<any>) => {
+    setForm({ ...form, [event.target.name]: event.target.value });
   };
+
+  const onCheckboxChange = (event: ChangeEvent<any>) => {
+    setForm({ ...form, [event.target.name]: event.target.checked });
+  };
+
+  const onSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    notify();
+  };
+
+  useEffect(() => {
+    setValidForm(
+      form.beerName.length > 0 &&
+        form.beerType.length > 0 &&
+        form.ingredients.length > 0
+    );
+  }, [form]);
 
   return (
-    <>
-      <h1 style={{ textAlign: "center", color: "#595959" }}>Beer Form</h1>
-      <form className="create-beer-form" onSubmit={handleSubmit}>
-        <TextField
-          className="margin-bottom-one"
-          label="Beer name"
-          id="beerName"
-          name="beerName"
-          variant="outlined"
-          required
-        />
-        <FormControl variant="outlined" className="margin-bottom-one">
-          <InputLabel htmlFor="beerType">Beer type</InputLabel>
-          <Select
-            native
-            inputProps={{
-              name: "beerType",
-              id: "beerType",
-            }}
-          >
-            <MenuItem value="ale">Ale</MenuItem>
-            <MenuItem value="lager">Lager</MenuItem>
-            <MenuItem value="malt">Malt</MenuItem>
-            <MenuItem value="stout">Stout</MenuItem>
-          </Select>
-        </FormControl>
-        <FormControlLabel
-          value="end"
-          control={<Checkbox color="primary" />}
-          label="Has corn"
-          labelPlacement="end"
-          className="margin-bottom-one"
-        />
-        <TextField
-          id="ingredients"
-          name="ingredients"
-          label="Ingredients"
-          multiline
-          rowsMax={4}
-          onChange={handleChange}
-          className="margin-bottom-one"
-          variant="outlined"
-        />
-        <Button variant="contained" color="primary">
+    <div className='create-beer-form'>
+      <h1 className='create-beer-form__title'>Beer Form</h1>
+      <form
+        className='create-beer-form__form'
+        onSubmit={onSubmit}
+        data-testid='form'>
+        <div className='create-beer-form__input-container'>
+          <TextField
+            label='Beer name'
+            id='beerName'
+            name='beerName'
+            variant='outlined'
+            onChange={onInputChange}
+            value={form.beerName}
+          />
+        </div>
+        <div className='create-beer-form__input-container'>
+          <FormControl variant='outlined'>
+            <InputLabel id='beerTypeLabel'>Beer type</InputLabel>
+            <Select
+              labelId='beerTypeLabel'
+              id='beerType'
+              label='Beer type'
+              onChange={onSelectChange}
+              value={form.beerType}
+              inputProps={{
+                name: 'beerType',
+                id: 'beerType',
+              }}>
+              <MenuItem data-testid='beer-type-option' value='ale'>
+                Ale
+              </MenuItem>
+              <MenuItem data-testid='beer-type-option' value='lager'>
+                Lager
+              </MenuItem>
+              <MenuItem data-testid='beer-type-option' value='malt'>
+                Malt
+              </MenuItem>
+              <MenuItem data-testid='beer-type-option' value='stout'>
+                Stout
+              </MenuItem>
+            </Select>
+          </FormControl>
+        </div>
+        <div className='create-beer-form__input-container'>
+          <FormControlLabel
+            control={<Checkbox color='primary' />}
+            label='Has corn'
+            labelPlacement='end'
+            name='hasCorn'
+            id='hasCorn'
+            onChange={onCheckboxChange}
+            checked={form.hasCorn}
+          />
+        </div>
+        <div className='create-beer-form__input-container'>
+          <TextField
+            id='ingredients'
+            label='Ingredients'
+            multiline
+            rows={3}
+            variant='outlined'
+            name='ingredients'
+            onChange={onInputChange}
+            value={form.ingredients}
+          />
+        </div>
+        <Button
+          data-testid='form-submit-button'
+          type='submit'
+          variant='contained'
+          color='secondary'
+          disabled={!validForm}>
           Submit
         </Button>
       </form>
-    </>
+    </div>
   );
 };
 

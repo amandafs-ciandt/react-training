@@ -1,0 +1,20 @@
+.dog-filter {
+  padding: 1rem;
+  padding-bottom: 0;
+
+  &__item {
+    display: flex;
+    align-items: center;
+  }
+
+  .MuiChip-root {
+    height: 18px;
+    width: 18px;
+    margin-left: 0.25rem;
+  }
+
+  .MuiChip-label {
+    padding: 2px 0;
+    font-size: 11px;
+  }
+}
