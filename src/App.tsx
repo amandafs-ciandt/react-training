@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useStore } from 'effector-react';
 import axios, { AxiosResponse } from 'axios';
 import { useSnackbar } from 'notistack';
@@ -21,7 +21,7 @@ const App = () => {
   const { enqueueSnackbar } = useSnackbar();
   const isLoaded = useStore(loaded);
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (!isLoaded) {
       getDogList();
     }

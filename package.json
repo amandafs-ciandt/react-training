@@ -51,8 +51,16 @@
   "devDependencies": {
     "@types/jest-when": "^2.7.1",
     "@types/yup": "^0.26.37",
+    "axios-mock-adapter": "^1.18.1",
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.2",
     "jest-when": "^2.7.1"
+  },
+  "jest": {
+    "collectCoverageFrom": [
+      "src/**/*.{js,jsx,ts,tsx}",
+      "!src/index.tsx",
+      "!src/serviceWorker.ts"
+    ]
   }
 }

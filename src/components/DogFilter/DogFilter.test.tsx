@@ -4,7 +4,6 @@ import { when } from 'jest-when';
 
 import * as effector from 'effector-react';
 import { dogs, dogBreedFilter } from '../../effector/store';
-import * as events from '../../effector/event';
 
 import DogFilter from '.';
 
