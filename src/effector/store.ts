@@ -7,8 +7,9 @@ import {
   updateList,
   toggleFilter,
   submitForm,
+  setField,
 } from './event';
-import { Dog, BreedFilter, BeerForm } from '../shared/types';
+import { Dog, BreedFilter, BeerForm, FormEvent } from '../shared/types';
 
 export const dogBreedFilter = createStore([
   { letter: 'a', selected: false },
@@ -109,4 +110,20 @@ export const beerForm = createStore<BeerForm>({
   beerType: '',
   hasCorn: false,
   ingredients: '',
-}).on(submitForm, (_, submittedData: BeerForm) => submittedData);
+}).on(setField, (form: BeerForm, event: FormEvent) => {
+  return { ...form, [event.name]: event.value };
+});
+
+export const validForm = beerForm.map(
+  (form: BeerForm) =>
+    form.beerName.length > 0 &&
+    form.beerType.length > 0 &&
+    form.ingredients.length > 0
+);
+
+export const beerFormik = createStore<BeerForm>({
+  beerName: '',
+  beerType: '',
+  hasCorn: false,
+  ingredients: '',
+}).on(submitForm, (_, submittedData: any) => submittedData);

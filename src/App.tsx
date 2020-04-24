@@ -3,7 +3,7 @@ import { useStore } from 'effector-react';
 import axios, { AxiosResponse } from 'axios';
 import { useSnackbar } from 'notistack';
 
-import { loadList, setLoaded, selectDog } from './effector/event';
+import { loadList, setLoaded, selectDog, submitForm } from './effector/event';
 import { loaded } from './effector/store';
 
 import CreateBeerForm from './components/CreateBeerForm';
@@ -12,7 +12,7 @@ import DogDetails from './components/DogDetails';
 import DogList from './components/DogList';
 import DogFilter from './components/DogFilter';
 
-import { Dog } from './shared/types';
+import { Dog, BeerForm } from './shared/types';
 
 import { CircularProgress, Divider } from '@material-ui/core';
 import './App.scss';
@@ -47,7 +47,7 @@ const App = () => {
     }
   };
 
-  const onFormNotify = () => {
+  const notify = () => {
     enqueueSnackbar('Form successfully submitted!', {
       variant: 'success',
       anchorOrigin: {
@@ -62,8 +62,8 @@ const App = () => {
       {renderDogInfo()}
       <Divider />
       <div className='app__forms-container'>
-        <CreateBeerForm notify={onFormNotify} />
-        <CreateBeerFormik notify={onFormNotify} />
+        <CreateBeerForm notify={notify} />
+        <CreateBeerFormik notify={notify} />
       </div>
     </div>
   );

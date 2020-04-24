@@ -1,4 +1,4 @@
-import React, { useState, useEffect, FormEvent, ChangeEvent } from 'react';
+import React, { FormEvent, ChangeEvent } from 'react';
 import {
   TextField,
   FormControl,
@@ -12,55 +12,40 @@ import {
 
 import './CreateBeerForm.scss';
 
+import { useStore } from 'effector-react';
+import { validForm } from '../../effector/store';
+import { setField } from '../../effector/event';
+
 interface IProps {
   notify: Function;
 }
 
-type FormData = {
-  beerName: string;
-  beerType: string;
-  hasCorn: boolean;
-  ingredients: string;
-};
-
-const defaultValues = {
-  beerName: '',
-  beerType: '',
-  hasCorn: false,
-  ingredients: '',
-};
-
 const CreateBeerForm = ({ notify }: IProps) => {
-  const [form, setForm] = useState<FormData>(defaultValues);
-  const [validForm, setValidForm] = useState(false);
+  const isValidForm = useStore(validForm);
 
   const onInputChange = (
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    const { name, value } = event.target;
-    setForm({ ...form, [name]: value });
+    setField(event.target);
   };
 
   const onSelectChange = (event: ChangeEvent<any>) => {
-    setForm({ ...form, [event.target.name]: event.target.value });
+    setField(event.target);
   };
 
   const onCheckboxChange = (event: ChangeEvent<any>) => {
-    setForm({ ...form, [event.target.name]: event.target.checked });
+    const formEvent = {
+      name: event.target.name,
+      value: event.target.checked,
+    };
+
+    setField(formEvent);
   };
 
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     notify();
   };
-
-  useEffect(() => {
-    setValidForm(
-      form.beerName.length > 0 &&
-        form.beerType.length > 0 &&
-        form.ingredients.length > 0
-    );
-  }, [form]);
 
   return (
     <div className='create-beer-form'>
@@ -76,7 +61,6 @@ const CreateBeerForm = ({ notify }: IProps) => {
             name='beerName'
             variant='outlined'
             onChange={onInputChange}
-            value={form.beerName}
           />
         </div>
         <div className='create-beer-form__input-container'>
@@ -87,7 +71,7 @@ const CreateBeerForm = ({ notify }: IProps) => {
               id='beerType'
               label='Beer type'
               onChange={onSelectChange}
-              value={form.beerType}
+              value=''
               inputProps={{
                 name: 'beerType',
                 id: 'beerType',
@@ -115,7 +99,6 @@ const CreateBeerForm = ({ notify }: IProps) => {
             name='hasCorn'
             id='hasCorn'
             onChange={onCheckboxChange}
-            checked={form.hasCorn}
           />
         </div>
         <div className='create-beer-form__input-container'>
@@ -127,7 +110,6 @@ const CreateBeerForm = ({ notify }: IProps) => {
             variant='outlined'
             name='ingredients'
             onChange={onInputChange}
-            value={form.ingredients}
           />
         </div>
         <Button
@@ -135,7 +117,7 @@ const CreateBeerForm = ({ notify }: IProps) => {
           type='submit'
           variant='contained'
           color='secondary'
-          disabled={!validForm}>
+          disabled={!isValidForm}>
           Submit
         </Button>
       </form>

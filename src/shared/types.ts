@@ -15,3 +15,8 @@ export interface BeerForm {
   hasCorn: boolean;
   ingredients: string;
 }
+
+export interface FormEvent {
+  name: string;
+  value: any;
+}

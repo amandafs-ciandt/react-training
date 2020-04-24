@@ -4,6 +4,7 @@ import { when } from 'jest-when';
 
 import * as effector from 'effector-react';
 import { dogs, dogBreedFilter } from '../../effector/store';
+import * as events from '../../effector/event';
 
 import DogFilter from '.';
 
@@ -67,6 +68,21 @@ describe('DogFilter', () => {
   });
 
   it('should call toggle filter when selected an option', () => {
-    //TODO
+    const toggleFilterMock = jest
+      .spyOn(events, 'toggleFilter')
+      .mockImplementation((letter) => letter);
+
+    dogFilterComponent = setUpShallowRendering();
+
+    dogFilterComponent
+      .find('[data-testid="dog-filter-radio"]')
+      .simulate('change', {
+        preventDefault: () => {},
+        target: {
+          value: 'b',
+        },
+      });
+
+    expect(toggleFilterMock).toHaveBeenCalled();
   });
 });

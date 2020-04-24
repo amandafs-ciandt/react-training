@@ -11,9 +11,17 @@ const setUpShallowRendering = (): ShallowWrapper => {
 
 describe('CreateBeerForm', () => {
   let createBeerFormComponent: ShallowWrapper;
+  let useEffect: any;
+
+  const mockUseEffect = () => {
+    useEffect.mockImplementationOnce((f: any) => f());
+  };
 
   beforeEach(() => {
     createBeerFormComponent = setUpShallowRendering();
+
+    useEffect = jest.spyOn(React, 'useEffect');
+    mockUseEffect();
   });
 
   it('should render correctly', () => {
@@ -46,100 +54,6 @@ describe('CreateBeerForm', () => {
     expect(formInputs.length).toEqual(numberOfInputs);
   });
 
-  it('should have submit button disabled after form is rendered', () => {
-    const submitButton = createBeerFormComponent.find(
-      '[data-testid="form-submit-button"]'
-    );
-
-    expect(submitButton.props().disabled).toBeTruthy();
-  });
-
-  it('should have submit button disabled when form is not valid', () => {
-    createBeerFormComponent.find('#beerType').simulate('change', {
-      persist: () => {},
-      target: {
-        name: 'beerName',
-        value: 'Budweiser',
-      },
-    });
-
-    const submitButton = createBeerFormComponent.find(
-      '[data-testid="form-submit-button"]'
-    );
-
-    expect(submitButton.props().disabled).toBeTruthy();
-  });
-
-  it('should have submit button disabled when form is valid', () => {
-    //TODO
-  });
-
-  it('should update beerName when it is changed', () => {
-    createBeerFormComponent.find('#beerName').simulate('change', {
-      persist: () => {},
-      target: {
-        name: 'beerName',
-        value: 'Budweiser',
-      },
-    });
-
-    const newValue = createBeerFormComponent.find('#beerName').props().value;
-
-    expect(newValue).toEqual('Budweiser');
-  });
-
-  it('should update beerType when it is changed', () => {
-    createBeerFormComponent.find('#beerType').simulate('change', {
-      persist: () => {},
-      target: {
-        name: 'beerType',
-        value: 'lager',
-      },
-    });
-
-    const newValue = createBeerFormComponent.find('#beerType').props().value;
-
-    expect(newValue).toEqual('lager');
-  });
-
-  it('should update hasCorn when it is changed', () => {
-    createBeerFormComponent.find('#hasCorn').simulate('change', {
-      persist: () => {},
-      target: {
-        name: 'hasCorn',
-        checked: true,
-      },
-    });
-
-    const newValue = createBeerFormComponent.find('#hasCorn').props().checked;
-
-    expect(newValue).toEqual(true);
-  });
-
-  it('should update ingredients when it is changed', () => {
-    const ingredientsValue = 'Water, barley malt, rice, yeast and hops';
-
-    createBeerFormComponent.find('#ingredients').simulate('change', {
-      persist: () => {},
-      target: {
-        name: 'ingredients',
-        value: ingredientsValue,
-      },
-    });
-
-    const newValue = createBeerFormComponent.find('#ingredients').props().value;
-
-    expect(newValue).toEqual(ingredientsValue);
-  });
-
-  it('should submit form correctly', () => {
-    createBeerFormComponent
-      .find('form')
-      .simulate('submit', { preventDefault() {} });
-
-    expect(mockedNotify).toHaveBeenCalledTimes(1);
-  });
-
   it('should show the correct beer types on select', () => {
     const beerTypes = ['ale', 'lager', 'malt', 'stout'];
     const optionElements = createBeerFormComponent.find(
@@ -152,5 +66,61 @@ describe('CreateBeerForm', () => {
     expect(optionElements.get(1).props.value).toEqual(beerTypes[1]);
     expect(optionElements.get(2).props.value).toEqual(beerTypes[2]);
     expect(optionElements.get(3).props.value).toEqual(beerTypes[3]);
+  });
+
+  it('should have submit button disabled after form is rendered', () => {
+    const submitButton = createBeerFormComponent.find(
+      '[data-testid="form-submit-button"]'
+    );
+
+    expect(submitButton.props().disabled).toBeTruthy();
+  });
+
+  it('should have submit button enabled if form is valid', () => {
+    createBeerFormComponent.find('#beerName').simulate('change', {
+      persist: () => {},
+      target: {
+        name: 'beerName',
+        value: 'Budweiser',
+      },
+    });
+
+    createBeerFormComponent.find('#beerType').simulate('change', {
+      persist: () => {},
+      target: {
+        name: 'beerType',
+        value: 'lager',
+      },
+    });
+
+    createBeerFormComponent.find('#hasCorn').simulate('change', {
+      persist: () => {},
+      target: {
+        name: 'hasCorn',
+        checked: true,
+      },
+    });
+
+    createBeerFormComponent.find('#ingredients').simulate('change', {
+      persist: () => {},
+      target: {
+        name: 'ingredients',
+        value: 'Water, barley malt, rice, yeast and hops',
+      },
+    });
+
+    const submitButton = createBeerFormComponent.find(
+      '[data-testid="form-submit-button"]'
+    );
+
+    expect(submitButton.props().disabled).toBeFalsy();
+  });
+
+  it('should submit form correctly', () => {
+    createBeerFormComponent
+      .find('form')
+      .simulate('submit', { preventDefault() {} });
+
+    expect(mockedNotify).toHaveBeenCalledTimes(1);
   });
 });

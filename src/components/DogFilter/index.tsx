@@ -60,7 +60,11 @@ const DogFilter = () => {
 
   return (
     <div className='dog-filter'>
-      <RadioGroup row name='dog-filter' onChange={onChange}>
+      <RadioGroup
+        row
+        name='dog-filter'
+        data-testid='dog-filter-radio'
+        onChange={onChange}>
         {breedFilter}
       </RadioGroup>
     </div>

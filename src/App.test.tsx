@@ -73,7 +73,7 @@ describe('App', () => {
     expect(appComponent).toMatchSnapshot();
   });
 
-  it('should show toast notification when notify from CreateBeerForm is called', () => {
+  it('should show toast notification when notify is called on CreateBeerForm', () => {
     appComponent = setUpShallowRendering();
 
     (appComponent.find('CreateBeerForm').prop('notify') as any)();
@@ -91,7 +91,7 @@ describe('App', () => {
     );
   });
 
-  it('should show toast notification when notify from CreateBeerFormik is called', () => {
+  it('should show toast notification when notify is called on CreateBeerFormik', () => {
     appComponent = setUpShallowRendering();
 
     (appComponent.find('CreateBeerFormik').prop('notify') as any)();
@@ -135,36 +135,45 @@ describe('App', () => {
     expect(loadingExists).toBeFalsy();
   });
 
-  it('should fetch dog api data', async () => {
+  describe('on fetch api', () => {
     const mock = new MockAdapter(axios);
-    mock.onGet('https://dog.ceo/api/breeds/list/all').reply(200, mockDogList);
 
-    mock
-      .onGet('https://dog.ceo/api/breed/beagle/images/random')
-      .reply(200, mockDogImage);
-    mock
-      .onGet('https://dog.ceo/api/breed/pug/images/random')
-      .reply(200, mockDogImage);
-    mock
-      .onGet('https://dog.ceo/api/breed/stbernard/images/random')
-      .reply(200, mockDogImage);
+    beforeEach(() => {
+      mock.onGet('https://dog.ceo/api/breeds/list/all').reply(200, mockDogList);
 
-    useStoreSpy.mockReturnValue(false);
-    appComponent = setUpMountedRendering();
-
-    await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 0));
+      mock
+        .onGet('https://dog.ceo/api/breed/beagle/images/random')
+        .reply(200, mockDogImage);
+      mock
+        .onGet('https://dog.ceo/api/breed/pug/images/random')
+        .reply(200, mockDogImage);
+      mock
+        .onGet('https://dog.ceo/api/breed/stbernard/images/random')
+        .reply(200, mockDogImage);
     });
 
-    const loadListMock = jest
-      .spyOn(events, 'loadList')
-      .mockImplementation((dogs) => dogs);
+    afterEach(() => {
+      mock.reset();
+    });
 
-    const selectDogMock = jest
-      .spyOn(events, 'selectDog')
-      .mockImplementation((dog) => dog);
+    it('should get dog data when not yet loaded', async () => {
+      useStoreSpy.mockReturnValue(false);
+      appComponent = setUpMountedRendering();
 
-    expect(loadListMock).toHaveBeenCalledWith(dogsList);
-    expect(selectDogMock).toHaveBeenCalledWith(dogsList[0]);
+      await act(async () => {
+        await new Promise((resolve) => setTimeout(resolve, 0));
+      });
+
+      const loadListMock = jest
+        .spyOn(events, 'loadList')
+        .mockImplementation((dogs) => dogs);
+
+      const selectDogMock = jest
+        .spyOn(events, 'selectDog')
+        .mockImplementation((dog) => dog);
+
+      expect(loadListMock).toHaveBeenCalledWith(dogsList);
+      expect(selectDogMock).toHaveBeenCalledWith(dogsList[0]);
+    });
   });
 });

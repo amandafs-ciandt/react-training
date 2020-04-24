@@ -1,16 +1,49 @@
 import React from 'react';
-import { shallow, ShallowWrapper, ReactWrapper } from 'enzyme';
+import { shallow, ShallowWrapper } from 'enzyme';
+import { act } from '@testing-library/react';
+
+import * as events from '../../effector/event';
+
+import { Formik } from 'formik';
 
 import CreateBeerFormik from '.';
 
 const mockedNotify = jest.fn();
 
+const fillField = async (field: ShallowWrapper, name: string, value: any) => {
+  await act(async () => {
+    field.simulate('change', {
+      persist: () => {},
+      target: {
+        name,
+        value,
+      },
+    });
+  });
+
+  await act(async () => {
+    field.simulate('blur', {
+      target: {
+        name,
+        value,
+      },
+    });
+  });
+};
+
 const setUpShallowRendering = (): ShallowWrapper => {
   return shallow(<CreateBeerFormik notify={mockedNotify} />);
 };
 
+const formValues = {
+  beerName: 'Budweiser',
+  beerType: 'lager',
+  hasCorn: false,
+  ingredients: 'Water, barley malt, rice, yeast and hops',
+};
+
 describe('CreateBeerFormik', () => {
-  let createBeerFormikComponent: ShallowWrapper | ReactWrapper;
+  let createBeerFormikComponent: ShallowWrapper;
 
   beforeEach(() => {
     createBeerFormikComponent = setUpShallowRendering();
@@ -30,60 +63,54 @@ describe('CreateBeerFormik', () => {
   });
 
   it('should render the form', () => {
-    const formExists = createBeerFormikComponent.exists(
-      '.create-beer-formik__form'
-    );
+    const formExists = createBeerFormikComponent.exists(Formik);
 
     expect(formExists).toBeTruthy();
   });
 
   it('should render the inputs', () => {
     const numberOfInputs = 4;
-    const formInputs = createBeerFormikComponent.find(
-      '.create-beer-formik__input-container'
-    );
+    const formInputs = createBeerFormikComponent
+      .find(Formik)
+      .dive()
+      .find('.create-beer-formik__input-container');
 
     expect(formInputs.length).toEqual(numberOfInputs);
   });
 
   it('should have submit button disabled after form is rendered', () => {
-    const submitButton = createBeerFormikComponent.find(
-      '[data-testid="form-submit-button"]'
-    );
+    const submitButton = createBeerFormikComponent
+      .find(Formik)
+      .dive()
+      .find('[data-testid="form-submit-button"]');
 
-    expect(submitButton.props().disabled).toBeTruthy();
+    expect(submitButton.prop('disabled')).toBeTruthy();
   });
 
   it('should update beerName when it is changed', () => {
-    createBeerFormikComponent.find('#beerName').simulate('change', {
-      persist: () => {},
-      target: {
-        name: 'beerName',
-        value: 'Budweiser',
-      },
-    });
+    const formikElement = createBeerFormikComponent.find(Formik).dive();
 
-    const newValue = createBeerFormikComponent.find('#beerName').props().value;
+    fillField(formikElement.find('#beerName'), 'beerName', formValues.beerName);
 
-    expect(newValue).toEqual('Budweiser');
+    const newValue = formikElement.find('#beerName').prop('value');
+
+    expect(newValue).toEqual(formValues.beerName);
   });
 
   it('should update beerType when it is changed', () => {
-    createBeerFormikComponent.find('#beerType').simulate('change', {
-      persist: () => {},
-      target: {
-        name: 'beerType',
-        value: 'lager',
-      },
-    });
+    const formikElement = createBeerFormikComponent.find(Formik).dive();
 
-    const newValue = createBeerFormikComponent.find('#beerType').props().value;
+    fillField(formikElement.find('#beerType'), 'beerType', formValues.beerType);
 
-    expect(newValue).toEqual('lager');
+    const newValue = formikElement.find('#beerType').prop('value');
+
+    expect(newValue).toEqual(formValues.beerType);
   });
 
   it('should update hasCorn when it is changed', () => {
-    createBeerFormikComponent.find('#hasCorn').simulate('change', {
+    const formikElement = createBeerFormikComponent.find(Formik).dive();
+
+    formikElement.find('#hasCorn').simulate('change', {
       persist: () => {},
       target: {
         name: 'hasCorn',
@@ -91,29 +118,58 @@ describe('CreateBeerFormik', () => {
       },
     });
 
-    const newValue = createBeerFormikComponent.find('#hasCorn').props().checked;
+    const newValue = formikElement.find('#hasCorn').prop('checked');
 
     expect(newValue).toEqual(true);
   });
 
   it('should update ingredients when it is changed', () => {
-    const ingredientsValue = 'Water, barley malt, rice, yeast and hops';
+    const formikElement = createBeerFormikComponent.find(Formik).dive();
 
-    createBeerFormikComponent.find('#ingredients').simulate('change', {
-      persist: () => {},
-      target: {
-        name: 'ingredients',
-        value: ingredientsValue,
-      },
-    });
+    fillField(
+      formikElement.find('#ingredients'),
+      'ingredients',
+      formValues.ingredients
+    );
 
-    const newValue = createBeerFormikComponent.find('#ingredients').props()
-      .value;
+    const newValue = formikElement.find('#ingredients').prop('value');
 
-    expect(newValue).toEqual(ingredientsValue);
+    expect(newValue).toEqual(formValues.ingredients);
   });
 
-  it('should submit form correctly', () => {
-    //TODO
+  it('should submit correctly when form is valid', async () => {
+    const preventDefault = jest.fn();
+    const resetForm = jest.fn();
+    const submitFormMock = jest
+      .spyOn(events, 'submitForm')
+      .mockImplementation((form) => form);
+
+    const formikElement = createBeerFormikComponent.find(Formik).dive();
+
+    await fillField(
+      formikElement.find('#beerName'),
+      'beerName',
+      formValues.beerName
+    );
+    await fillField(
+      formikElement.find('#beerType'),
+      'beerType',
+      formValues.beerType
+    );
+    await fillField(
+      formikElement.find('#ingredients'),
+      'ingredients',
+      formValues.ingredients
+    );
+
+    await act(async () => {
+      createBeerFormikComponent
+        .find(Formik)
+        .simulate('submit', { preventDefault }, { resetForm });
+    });
+
+    expect(resetForm).toHaveBeenCalled();
+    expect(mockedNotify).toHaveBeenCalledTimes(1);
+    expect(submitFormMock).toHaveBeenCalled();
   });
 });
