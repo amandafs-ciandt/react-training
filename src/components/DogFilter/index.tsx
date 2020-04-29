@@ -1,43 +1,43 @@
-import React, { ChangeEvent } from 'react';
-import _ from 'lodash';
+import React, { ChangeEvent } from "react";
+import _ from "lodash";
 
-import { RadioGroup, FormControlLabel, Radio, Chip } from '@material-ui/core';
+import { RadioGroup, FormControlLabel, Radio, Chip } from "@material-ui/core";
 
-import { useStore } from 'effector-react';
-import { dogBreedFilter, dogs } from '../../effector/store';
-import { toggleFilter } from '../../effector/event';
+import { useStore } from "effector-react";
+import { dogBreedFilter, dogs } from "../../stores/dogList/dogListStores";
+import { toggleFilter } from "../../stores/dogList/dogListEvents";
 
-import { Dog } from '../../shared/types';
+import { Dog } from "../../shared/types";
 
-import './DogFilter.scss';
+import "./DogFilter.scss";
 
 const DogFilter = () => {
   const dogList = useStore(dogs);
   const filterOptions = useStore(dogBreedFilter);
 
   const filterItem = (letter: string) => (
-    <div className='dog-filter__item'>
-      {_.upperFirst(letter)}{' '}
+    <div className="dog-filter__item">
+      {_.upperFirst(letter)}{" "}
       <Chip
         label={
           dogList.filter((dog: Dog) => dog.breed.startsWith(letter)).length
         }
-        data-testid='dog-item-scolded-value'
-        color='secondary'
-        size='small'
+        data-testid="dog-item-scolded-value"
+        color="secondary"
+        size="small"
       />
     </div>
   );
 
   const breedFilter = filterOptions.map(({ letter }, index) => {
-    if (letter !== '') {
+    if (letter !== "") {
       return (
         <FormControlLabel
           key={index}
           value={letter}
           control={<Radio />}
           label={filterItem(letter)}
-          data-testid='dog-filter-option'
+          data-testid="dog-filter-option"
         />
       );
     } else {
@@ -46,8 +46,8 @@ const DogFilter = () => {
           key={index}
           value={letter}
           control={<Radio />}
-          label={<div className='dog-filter__item'>All</div>}
-          data-testid='dog-filter-option'
+          label={<div className="dog-filter__item">All</div>}
+          data-testid="dog-filter-option"
         />
       );
     }
@@ -59,12 +59,13 @@ const DogFilter = () => {
   };
 
   return (
-    <div className='dog-filter'>
+    <div className="dog-filter">
       <RadioGroup
         row
-        name='dog-filter'
-        data-testid='dog-filter-radio'
-        onChange={onChange}>
+        name="dog-filter"
+        data-testid="dog-filter-radio"
+        onChange={onChange}
+      >
         {breedFilter}
       </RadioGroup>
     </div>

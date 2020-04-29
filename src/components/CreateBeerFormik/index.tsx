@@ -1,9 +1,9 @@
-import React from 'react';
-import { Formik } from 'formik';
-import * as yup from 'yup';
+import React from "react";
+import { Formik } from "formik";
+import * as yup from "yup";
 
-import { BeerForm } from '../../shared/types';
-import { submitForm } from '../../effector/event';
+import { BeerForm } from "../../shared/types";
+import { submitForm } from "../../stores/beerForms/beerFormsEvents";
 
 import {
   TextField,
@@ -14,9 +14,9 @@ import {
   FormControlLabel,
   Checkbox,
   Button,
-} from '@material-ui/core';
+} from "@material-ui/core";
 
-import './CreateBeerFormik.scss';
+import "./CreateBeerFormik.scss";
 
 interface IProps {
   notify: Function;
@@ -29,10 +29,10 @@ const validationSchema = yup.object().shape({
 });
 
 const defaultValues = {
-  beerName: '',
-  beerType: '',
+  beerName: "",
+  beerType: "",
   hasCorn: false,
-  ingredients: '',
+  ingredients: "",
 };
 
 const CreateBeerFormik = ({ notify }: IProps) => {
@@ -43,12 +43,13 @@ const CreateBeerFormik = ({ notify }: IProps) => {
   };
 
   return (
-    <div className='create-beer-formik'>
-      <h1 className='create-beer-formik__title'>Beer Formik</h1>
+    <div className="create-beer-formik">
+      <h1 className="create-beer-formik__title">Beer Formik</h1>
       <Formik
         initialValues={defaultValues}
         validationSchema={validationSchema}
-        onSubmit={handleSubmit}>
+        onSubmit={handleSubmit}
+      >
         {({
           values,
           setFieldValue,
@@ -59,73 +60,75 @@ const CreateBeerFormik = ({ notify }: IProps) => {
         }) => (
           <form onSubmit={handleSubmit}>
             <div>
-              <div className='create-beer-formik__input-container'>
+              <div className="create-beer-formik__input-container">
                 <TextField
-                  label='Beer name'
-                  id='beerName'
-                  name='beerName'
-                  variant='outlined'
+                  label="Beer name"
+                  id="beerName"
+                  name="beerName"
+                  variant="outlined"
                   value={values.beerName}
                   onChange={handleChange}
                 />
               </div>
-              <div className='create-beer-formik__input-container'>
-                <FormControl variant='outlined'>
-                  <InputLabel id='beerTypeLabel'>Beer type</InputLabel>
+              <div className="create-beer-formik__input-container">
+                <FormControl variant="outlined">
+                  <InputLabel id="beerTypeLabel">Beer type</InputLabel>
                   <Select
-                    labelId='beerTypeLabel'
-                    id='beerType'
-                    label='Beer type'
+                    labelId="beerTypeLabel"
+                    id="beerType"
+                    label="Beer type"
                     value={values.beerType}
                     onChange={handleChange}
                     inputProps={{
-                      name: 'beerType',
-                      id: 'beerType',
-                    }}>
-                    <MenuItem data-testid='beer-type-option' value='ale'>
+                      name: "beerType",
+                      id: "beerType",
+                    }}
+                  >
+                    <MenuItem data-testid="beer-type-option" value="ale">
                       Ale
                     </MenuItem>
-                    <MenuItem data-testid='beer-type-option' value='lager'>
+                    <MenuItem data-testid="beer-type-option" value="lager">
                       Lager
                     </MenuItem>
-                    <MenuItem data-testid='beer-type-option' value='malt'>
+                    <MenuItem data-testid="beer-type-option" value="malt">
                       Malt
                     </MenuItem>
-                    <MenuItem data-testid='beer-type-option' value='stout'>
+                    <MenuItem data-testid="beer-type-option" value="stout">
                       Stout
                     </MenuItem>
                   </Select>
                 </FormControl>
               </div>
-              <div className='create-beer-formik__input-container'>
+              <div className="create-beer-formik__input-container">
                 <FormControlLabel
-                  control={<Checkbox color='primary' />}
-                  label='Has corn'
-                  labelPlacement='end'
-                  name='hasCorn'
-                  id='hasCorn'
+                  control={<Checkbox color="primary" />}
+                  label="Has corn"
+                  labelPlacement="end"
+                  name="hasCorn"
+                  id="hasCorn"
                   checked={values.hasCorn}
-                  onChange={() => setFieldValue('hasCorn', !values.hasCorn)}
+                  onChange={() => setFieldValue("hasCorn", !values.hasCorn)}
                 />
               </div>
-              <div className='create-beer-formik__input-container'>
+              <div className="create-beer-formik__input-container">
                 <TextField
-                  id='ingredients'
-                  label='Ingredients'
+                  id="ingredients"
+                  label="Ingredients"
                   multiline
                   rows={3}
-                  variant='outlined'
-                  name='ingredients'
+                  variant="outlined"
+                  name="ingredients"
                   value={values.ingredients}
                   onChange={handleChange}
                 />
               </div>
               <Button
                 disabled={!(isValid && dirty)}
-                data-testid='form-submit-button'
-                type='submit'
-                variant='contained'
-                color='secondary'>
+                data-testid="form-submit-button"
+                type="submit"
+                variant="contained"
+                color="secondary"
+              >
                 Submit
               </Button>
             </div>
