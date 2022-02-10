@@ -19,7 +19,7 @@
     "effector-react": "^20.7.1",
     "formik": "^2.1.4",
     "lodash": "^4.17.15",
-    "node-sass": "^4.13.1",
+    "node-sass": "^7.0.0",
     "notistack": "^0.9.11",
     "react": "^16.13.1",
     "react-scripts": "3.4.1",
